@@ -1,0 +1,20 @@
+
+-------- Letrix ------
+
+Narrativa ou Tema 
+-Lógica  
+
+
+Menu:
+- Iniciar jogo 
+- Regras 
+- Créditos 
+- Pontuação (tentativas, acertos e erros)
+- Sair 
+
+Sistema de Regras:
+Dica - aparece a partir da 5ª tentativa.
+Se passar de 8 tentativas a pessoa perde o jogo.
+Pode jogar 3 palavras por dia.
+
+
