@@ -1,13 +1,12 @@
 <?php
 
-
 $palavras = [
     "abacates" => "Fruta tropical de polpa verde.",
-    "montanha" => "Elevação natural muito alta.",
+    "montanha" => "Elevação natural.",
     "telefone" => "Usado para se comunicar à distância.",
     "cachorro" => "Animal considerado o melhor amigo do homem.",
     "girassol" => "Planta que segue a luz do sol.",
-    "formigas" => "Inseto pequeno que vive em colônia.",
+    "formigas" => "Inseto que vive em colônias.",
     "gramados" => "Áreas cobertas de grama.",
     "oceânico" => "Relacionado ao mar profundo.",
     "esmaltes" => "Produtos usados para pintar unhas.",
@@ -68,22 +67,12 @@ $palavras = [
     "cordeiro" => "Filhote de carneiro.",
     "estrelas" => "Corpos brilhantes no céu.",
     "teclados" => "Dispositivos de digitação.",
-    "mandioca" => "Raiz muito usada na culinária.",
+    "mandioca" => "Raiz muito usada na culinária brasileira.",
     "rocheado" => "Cheio de pedras.",
     "sorvetes" => "Sobremesas geladas.",
     "venenoso" => "Oferece perigo químico.",
-    "banheira" => "Usada para tomar banho relaxante."
+    "banheira" => "Usada para tomar um banho relaxante."
 ];
-
-$indice = array_rand($palavras); // pega a chave aleatória
-$palavra = $indice;               // é a palavra correta
-$dica = $palavras[$palavra];      // dica correspondente
-
-$numLetras = strlen($palavra);    // número correto de letras
-$letrix = array_fill(0, $numLetras, "_"); // traços corretos
-
-$menu_STR = -1;
-$inicio = false;
 
 $stats = [
     'partidas' => 0,
@@ -91,7 +80,24 @@ $stats = [
     'derrotas' => 0
 ];
 
-function verificarInicio(&$letrix, $numLetras, $palavra)
+$menu_STR = -1;
+$inicio = false;
+
+$numLetras = mb_strlen($palavra);    // número correto de letras
+$letrix = array_fill(0, $numLetras, "_"); // traços corretos
+
+function escolherPalavra($palavras){
+    
+    $indice = array_rand($palavras);
+
+    $palavra = $indice;
+    $dica = $palavras[$indice];
+
+    return [$palavra, $dica];
+}
+
+
+function verificarInicio(&$letrix, $numLetras, $palavra, $dica)
 {
     global $inicio, $stats;
     echo "Rodada Iniciando...\n";
@@ -100,7 +106,7 @@ function verificarInicio(&$letrix, $numLetras, $palavra)
     $venceu = false;
 
     //tentativas por palavra
-    while ($tentativas < 8) {
+    while ($tentativas < 9) {
 
         echo implode(" ", $letrix) . "\n";
 
@@ -109,9 +115,8 @@ function verificarInicio(&$letrix, $numLetras, $palavra)
         verificarChute($chute, $numLetras);
 
         analisarChute($chute, $palavra, $numLetras, $letrix);
-
-        if ($chute === $palavra) {
-            echo "PARABÉNS! Você acertou a palavra!";
+        if (mb_strtolower($chute, 'UTF-8') === mb_strtolower($palavra, 'UTF-8')) {
+            echo "PARABÉNS! Você acertou a palavra!\n";
             $stats['vitorias']++;
             $venceu = true;
             break;
@@ -119,8 +124,9 @@ function verificarInicio(&$letrix, $numLetras, $palavra)
 
         echo "Tentativas restantes: " . (8 - $tentativas) . "\n\n";
 
-        if($tentativas == 7){
-            echo"$dica"
+        if($tentativas == 6){
+            echo"---- DICA----- \n";
+            echo"$dica \n";
         }
         
         $tentativas++;
@@ -137,18 +143,24 @@ function verificarInicio(&$letrix, $numLetras, $palavra)
 }
 
 function analisarChute($chute, $palavra, $numLetras, &$letrix)
-{ //esse & altera o array verdadeiro
-
+{
     for ($i = 0; $i < $numLetras; $i++) {
 
-        if ($chute[$i] === $palavra[$i]) { //se o chute estiver no lugar certo a letra fica verde
-            $letrix[$i] = "\033[42m " . $chute[$i] . " \033[0m";
-        } else if (strpos($palavra, $chute[$i]) !== false) { //se o chute estiver na palavra mas no lugar errado, a letra fica amarela
-            $letrix[$i] = "\033[43m " . $chute[$i] . " \033[0m";
-        } else { //se não a letra fica vermelha
-            $letrix[$i] = "\033[31m " . $chute[$i] . " \033[0m \n";
+        if ($chute[$i] === $palavra[$i]) {
+            // Verde
+            $letrix[$i] = "\033[42m".$chute[$i]."\033[0m";
+
+        } else if (strpos($palavra, $chute[$i]) !== false) {
+            // Amarelo
+            $letrix[$i] = "\033[43m".$chute[$i]."\033[0m";
+
+        } else {
+            // Vermelho
+           $letrix[$i] = "\033[41m\033[97m".$chute[$i]."\033[0m";
+
         }
     }
+
     return implode(" ", $letrix);
 }
 
@@ -156,12 +168,19 @@ function exibirMenu()
 {
     echo "\n";
     echo "================================================\n";
-    echo "                     MENU                       \n";
+    echo "              BEM-VINDO AO "
+    . "\033[31mL\033[0m"
+    . "\033[32mE\033[0m"
+    . "\033[33mT\033[0m"
+    . "\033[34mR\033[0m"
+    . "\033[35mI\033[0m"
+    . "\033[36mX\033[0m"
+    . "\n";
     echo "================================================\n";
     echo "1 - Iniciar jogo\n";
     echo "2 - Regras\n";
-    echo "3 - Créditos\n";
-    echo "4 - Pontuação (tentativas, acertos e erros)\n";
+    echo "3 - Pontuação (tentativas, acertos e erros)\n";
+    echo "4 - Créditos\n";
     echo "0 - Sair\n";
     echo "================================================\n";
     echo "Escolha uma opção: ";
@@ -169,8 +188,10 @@ function exibirMenu()
 
 function regrasLetrix()
 {
-    echo "---------- REGRAS DO LETRIX ----------\n";
-    echo "1 - Você deve adivinhar a palavra oculta com 8 letras.";
+    echo "================================================\n";
+    echo "                    REGRAS                      \n";
+    echo "================================================\n";
+    echo "1 - Você deve adivinhar a palavra oculta com 8 letras.\n";
     echo "2 - Uma dica aparece a partir da 5ª tentativa.\n";
     echo "3 - O jogador perde se ultrapassar 8 tentativas.\n";
     echo "4 - Regra das cores: \n";
@@ -209,8 +230,8 @@ function verificarChute($chute, $numLetras)
     }
 
     // Verifica o tamanho do chute
-    if (strlen($chute) !== $numLetras) {
-        echo "Seu chute deve ter $numLetras letras!\n";
+    if (mb_strlen($chute) !== $numLetras) {
+        echo "Seu palpite deve conter $numLetras letras!\n";
         return false;
     }
 
@@ -232,15 +253,15 @@ function sair($menu)
 
 function creditos()
 {
-    echo "================\n";
-    echo "    CRÉDITOS    \n";
-    echo "================\n";
-    echo ".Alanis\n";
-    echo ".Carlos\n";
-    echo ".Davi Loyola\n";
-    echo ".Gabriel Pereira\n";
-    echo ".Vínicius\n";
-    echo ".Yasmin\n";
+    echo "================================================\n";
+    echo "                    CRÉDITOS                    \n";
+    echo "================================================\n";
+    echo "- Alanis\n";
+    echo "- Carlos\n";
+    echo "- Davi Loyola\n";
+    echo "- Gabriel Pereira\n";
+    echo "- Vínicius\n";
+    echo "- Yasmin\n";
 }
 
 do {
@@ -250,7 +271,11 @@ do {
     switch ($option) {
 
         case "1":
-            verificarInicio($letrix, $numLetras, $palavra);
+            list($palavra, $dica) = escolherPalavra($palavras);
+
+    $numLetras = mb_strlen($palavra);
+    $letrix = array_fill(0, $numLetras, "_");
+            verificarInicio($letrix, $numLetras, $palavra,  $dica);
 
             break;
 
@@ -259,11 +284,11 @@ do {
             break;
 
         case "3":
-            creditos();
+            estatisticas($stats);
             break;
 
         case "4":
-            estatisticas($stats);
+            creditos();
             break;
 
         case "0":
