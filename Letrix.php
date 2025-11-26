@@ -220,26 +220,33 @@ function exibirMenu()
     . "\033[36mX\033[0m"
     . "\n";
     echo "================================================\n";
-    echo "1 - Iniciar jogo\n";
-    echo "2 - Regras\n";
-    echo "3 - Pontuação (tentativas, acertos e erros)\n";
-    echo "4 - Créditos\n";
-    echo "0 - Sair\n";
+    echo "\033[31m1 -\033[0m Iniciar jogo\n";
+    echo "\033[32m2 -\033[0m Regras\n";
+    echo "\033[33m3 -\033[0m Pontuação (tentativas, acertos e erros)\n";
+    echo "\033[34m4 -\033[0m Créditos\n";
+    echo "\033[35m0 -\033[0m Sair\n";
     echo "================================================\n";
 }
 
 function regrasLetrix()
 {
     echo "================================================\n";
-    echo "                    REGRAS                      \n";
+    echo "                    "
+    . "\033[31mR\033[0m"
+    . "\033[32mE\033[0m"
+    . "\033[33mG\033[0m"
+    . "\033[34mR\033[0m"
+    . "\033[35mA\033[0m"
+    . "\033[36mS\033[0m"
+    . "\n";
     echo "================================================\n";
-    echo "1 - Você deve adivinhar a palavra oculta \ncom 8 letras.\n";
-    echo "2 - Uma dica aparece a partir da 5ª tentativa.\n";
-    echo "3 - O jogador perde se ultrapassar 8 tentativas.\n";
-    echo "4 - Regra das cores: \n";
-    echo "\033[32m- Letra VERDE: Letra existe na palavra e \nestá na posição correta.\033[0m\n";
-    echo "\033[33m- Letra AMARELA: Letra existe na palavra \nmas está na posição errada.\033[0m\n";
-    echo "\033[31m- Letra VERMELHA: Letra não existe na \npalavra.\033[0m\n";
+    echo "\033[31m1 -\033[0m Você deve adivinhar a palavra oculta \ncom 8 letras.\n";
+    echo "\033[32m2 -\033[0m Uma dica aparece a partir da 5ª tentativa.\n";
+    echo "\033[33m3 -\033[0m O jogador perde se ultrapassar 8 tentativas.\n";
+    echo "\033[34m4 -\033[0m Regra das cores: \n";
+    echo "\033[32m- Letra VERDE:\033[0m Letra existe na palavra e está na posição correta.\n";
+    echo "\033[33m- Letra AMARELA:\033[0m Letra existe na palavra mas está na posição errada.\n";
+    echo "\033[31m- Letra VERMELHA:\033[0m Letra não existe na palavra.\n";
 }
 
 //Função opção Pontuações
@@ -279,15 +286,29 @@ function sair($menu)
 function creditos()
 {
     echo "================================================\n";
-    echo "                    CRÉDITOS                    \n";
+    echo "                                        \n";
     echo "================================================\n";
-    echo "Produzido por: \n";
-    echo "- Alanis\n";
-    echo "- Carlos\n";
-    echo "- Davi Loyola\n";
-    echo "- Gabriel Pereira\n";
-    echo "- Vínicius\n";
-    echo "- Yasmin\n";
+    
+    //Créditos, com delay de 400ms
+    echo "                    ";
+    
+    usleep(400000);
+    echo "\nProduzido por:\n";
+    usleep(400000);
+    echo "- \033[31mAlanis\033[0m\n";
+    usleep(400000);
+    echo "- \033[32mCarlos\033[0m\n";
+    usleep(400000);
+    echo "- \033[33mDavi Loyola\033[0m\n";
+    usleep(400000);
+    echo "- \033[34mGabriel Pereira\033[0m\n";
+    usleep(400000);
+    echo "- \033[35mVínicius\033[0m\n";
+    usleep(400000);
+    echo "- \033[36mYasmin\033[0m\n";
+    usleep(400000);
+    echo "\n\033[32mObrigado por jogar!\033[0m\n";
+    usleep(400000);
 }
 
 do {
