@@ -237,7 +237,7 @@ function analisarChute($chute, $palavra, $numLetras, &$letrix)
         }
     }
 
-    // 3) agora marcar amarelos ou vermelhos conforme sobra na contagem
+    // agora marcar amarelos ou vermelhos conforme sobra na contagem
     for ($i = 0; $i < $numLetras; $i++) {
         if ($verdes[$i]) continue; // já marcado
 
