@@ -185,26 +185,75 @@ function verificarChute(&$chute, $numLetras)
     return true;
 }
 
-function analisarChute($chute, $palavra, $numLetras, &$letrix)//usei esse & para alterar no _ _ _ original
+// function analisarChute($chute, $palavra, $numLetras, &$letrix)//usei esse & para alterar no _ _ _ original
+// {
+//     for ($i = 0; $i < $numLetras; $i++) {//um for para percorrer as letras da palavra 
+
+//         if ($chute[$i] === $palavra[$i]) {
+//             // se a letra tiver  no lugar certo, adiciona ao fundo da letra a cor verde
+//             $letrix[$i] = "\033[42m".$chute[$i]."\033[0m";
+
+//         } else if (strpos($palavra, $chute[$i]) !== false) {
+//             // se a letra tiver  no lugar errado mas existir na palavra, adiciona ao fundo da letra a cor amarela
+//             $letrix[$i] = "\033[43m".$chute[$i]."\033[0m";
+
+//         } else {
+//             //se não tiver a letra na palavra, adiciona a cor vermelha
+//            $letrix[$i] = "\033[41m\033[97m".$chute[$i]."\033[0m";
+
+//         }
+//     }
+
+//     return implode(" ", $letrix); //retorna o _ _ _ _ colorido correspondente ao chute
+// }
+
+function analisarChute($chute, $palavra, $numLetras, &$letrix)
 {
-    for ($i = 0; $i < $numLetras; $i++) {//um for para percorrer as letras da palavra 
+    // normalizar (assume chute já sem acento e em minúsculas; aqui normalizamos a palavra)
+    $palavraNorm = removerAcentos(mb_strtolower($palavra, 'UTF-8'));
+    $chuteNorm   = removerAcentos(mb_strtolower($chute, 'UTF-8'));
 
-        if ($chute[$i] === $palavra[$i]) {
-            // se a letra tiver  no lugar certo, adiciona ao fundo da letra a cor verde
-            $letrix[$i] = "\033[42m".$chute[$i]."\033[0m";
+    // 1) criar array de contagem das letras da palavra
+    $contagem = [];
+    for ($i = 0; $i < $numLetras; $i++) {
+        $letra = mb_substr($palavraNorm, $i, 1, 'UTF-8');
+        if (!isset($contagem[$letra])) $contagem[$letra] = 0;
+        $contagem[$letra]++;
+    }
 
-        } else if (strpos($palavra, $chute[$i]) !== false) {
-            // se a letra tiver  no lugar errado mas existir na palavra, adiciona ao fundo da letra a cor amarela
-            $letrix[$i] = "\033[43m".$chute[$i]."\033[0m";
+    // 2) marcar verdes primeiro e descontar da contagem
+    $verdes = array_fill(0, $numLetras, false);
+    for ($i = 0; $i < $numLetras; $i++) {
+        $lChute = mb_substr($chuteNorm, $i, 1, 'UTF-8');
+        $lPal   = mb_substr($palavraNorm, $i, 1, 'UTF-8');
 
-        } else {
-            //se ã tiver a letra na palavra, adiciona a cor vermelha
-           $letrix[$i] = "\033[41m\033[97m".$chute[$i]."\033[0m";
-
+        if ($lChute === $lPal) {
+            // marca verde e desconta da contagem (se existir)
+            $letrix[$i] = "\033[42m".$lChute."\033[0m";
+            $verdes[$i] = true;
+            if (isset($contagem[$lChute]) && $contagem[$lChute] > 0) {
+                $contagem[$lChute]--;
+            }
         }
     }
 
-    return implode(" ", $letrix); //retorna o _ _ _ _ colorido correspondente ao chute
+    // 3) agora marcar amarelos ou vermelhos conforme sobra na contagem
+    for ($i = 0; $i < $numLetras; $i++) {
+        if ($verdes[$i]) continue; // já marcado
+
+        $lChute = mb_substr($chuteNorm, $i, 1, 'UTF-8');
+
+        if (isset($contagem[$lChute]) && $contagem[$lChute] > 0) {
+            // ainda há essa letra sobrando na palavra -> amarelo
+            $letrix[$i] = "\033[43m".$lChute."\033[0m";
+            $contagem[$lChute]--;
+        } else {
+            // não há sobra -> vermelho
+            $letrix[$i] = "\033[41m\033[97m".$lChute."\033[0m";
+        }
+    }
+
+    return implode(" ", $letrix);
 }
 
 function exibirMenu()
