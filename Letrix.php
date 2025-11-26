@@ -8,7 +8,7 @@ $palavras = [
     "girassol" => "Planta que segue a luz do sol.",
     "formigas" => "Inseto que vive em colônias.",
     "gramados" => "Áreas cobertas de grama.",
-    "oceânico" => "Relacionado ao mar profundo.",
+    "oceanico" => "Relacionado ao mar profundo.",
     "esmaltes" => "Produtos usados para pintar unhas.",
     "carreata" => "Várias pessoas seguindo em veículos.",
     "abacaxis" => "Fruta de polpa amarela e sabor ácido.",
@@ -38,15 +38,15 @@ $palavras = [
     "garrafas" => "Recipientes cilíndricos para líquidos.",
     "morangos" => "Frutas vermelhas pequenas.",
     "peneiras" => "Usadas para separar partículas.",
-    "aeróbico" => "Exercícios que usam oxigênio.",
+    "aerobico" => "Exercícios que usam oxigênio.",
     "voadores" => "Animais que conseguem voar.",
     "carnaval" => "Festa popular brasileira.",
     "lareiras" => "Usadas para aquecer ambientes.",
     "caldeira" => "Equipamento que produz vapor.",
     "espelhos" => "Refletem imagens.",
-    "armários" => "Usados para guardar itens.",
-    "tapeteão" => "Peça grande usada no chão.",
-    "diversão" => "Algo divertido de se fazer.",
+    "armarios" => "Usados para guardar itens.",
+    "tapeteao" => "Peça grande usada no chão.",
+    "diversao" => "Algo divertido de se fazer.",
     "mochilas" => "Usadas para carregar objetos.",
     "montagem" => "Processo de juntar peças.",
     "escritas" => "Palavras colocadas no papel.",
@@ -56,7 +56,7 @@ $palavras = [
     "cartazes" => "Folhas grandes para anúncios.",
     "serenata" => "Canção tocada para alguém.",
     "costelas" => "Parte do corpo ou alimento.",
-    "xadrezão" => "Jogo de tabuleiro.",
+    "xadrezao" => "Jogo de tabuleiro.",
     "bandeira" => "Símbolo de um país.",
     "maletona" => "Mala grande.",
     "salgados" => "Comidas de festa.",
@@ -83,85 +83,128 @@ $stats = [
 $menu_STR = -1;
 $inicio = false;
 
-$numLetras = mb_strlen($palavra);    // número correto de letras
-$letrix = array_fill(0, $numLetras, "_"); // traços corretos
 
-function escolherPalavra($palavras){
+function escolherPalavra($palavras){ //uso como o parâmetro o array de possíveis palavras
     
-    $indice = array_rand($palavras);
+    $indice = array_rand($palavras); // sorteio as palavras pelo índice
 
-    $palavra = $indice;
-    $dica = $palavras[$indice];
+    $palavra = $indice; //salvo nessa varíavel a palavra correspondente ao índice
+    $dica = $palavras[$indice]; // guarda a dica correspondente a palavra
 
-    return [$palavra, $dica];
+    return [$palavra, $dica]; //o método retorna a palavra e a dica correspondente
 }
 
-
-function verificarInicio(&$letrix, $numLetras, $palavra, $dica)
+function verificarInicio(&$letrix, $numLetras, $palavra, $dica) //uso esse & para ele puxar a variável real
 {
-    global $inicio, $stats;
-    echo "Rodada Iniciando...\n";
+    global $inicio, $stats; //coloquei elas como global para ter acesso
+    echo "\nRodada Iniciando...\n";
     $inicio = true;
     $tentativas = 0;
     $venceu = false;
 
-    //tentativas por palavra
-    while ($tentativas < 9) {
+    //o usuário tem 8 tentativas para tentar acertar
+    while ($tentativas < 8) {
 
-        echo implode(" ", $letrix) . "\n";
+        echo implode(" ", $letrix) . "\n"; //imprime o _ _ _ _
 
-        $chute = readline("Escreva o seu chute: ");
+        $chute = readline("Escreva o seu palpite: "); //pede o usuário o palpite dele
 
-        verificarChute($chute, $numLetras);
-
-        analisarChute($chute, $palavra, $numLetras, $letrix);
-        if (mb_strtolower($chute, 'UTF-8') === mb_strtolower($palavra, 'UTF-8')) {
-            echo "PARABÉNS! Você acertou a palavra!\n";
-            $stats['vitorias']++;
-            $venceu = true;
-            break;
+        if(!verificarChute($chute, $numLetras)){//chamo a função para verificar o palpite(chute)
+            continue;//se ela nn for válida, pede para ele tentar dnv sem perder uma rodada
         }
 
+        analisarChute($chute, $palavra, $numLetras, $letrix);//analisa o chute do usuário para  corresponder com a cor
+        if (mb_strtolower($chute, 'UTF-8') === mb_strtolower($palavra, 'UTF-8')) {//se o chute for exatamente igual a palavra a ser descoberta, ele vence
+            echo "PARABÉNS! Você acertou a palavra!\n";
+            $stats['vitorias']++; //soma as partidas que o usuário ganhou
+            $venceu = true;
+            break;//para o jogo
+        }
+
+       
+        $tentativas++;//mostra quantas tentativas resta para ele 
         echo "Tentativas restantes: " . (8 - $tentativas) . "\n\n";
 
-        if($tentativas == 6){
-            echo"---- DICA----- \n";
-            echo"$dica \n";
+        if($tentativas == 6){ //quando chega na rodada 7 exibe a dica na tela
+            echo "================================================\n";
+            echo "                  HORA DA DICA                  \n";
+            echo "================================================\n";
+            echo"$dica \n\n";
         }
         
-        $tentativas++;
+        
     }
 
 
     if (!$venceu) {
-        echo "Suas tentativas acabaram! A palavra era: $palavra";
-        $stats['derrotas']++;
+        echo "Suas tentativas acabaram! A palavra era: $palavra"; //se ultrapassa de 8, o usurio perde
+        $stats['derrotas']++; //soma nas drrotas
     }
 
-    $stats['partidas']++;
+    $stats['partidas']++;//soma ao número de partidas jogadas
 
 }
 
-function analisarChute($chute, $palavra, $numLetras, &$letrix)
+function removerAcentos($str) { //esse método transforma todos as vogais com acento em letras normais
+    return strtr($str, [
+        'á'=>'a','à'=>'a','ã'=>'a','â'=>'a','ä'=>'a',
+        'é'=>'e','è'=>'e','ê'=>'e','ë'=>'e',
+        'í'=>'i','ì'=>'i','î'=>'i','ï'=>'i',
+        'ó'=>'o','ò'=>'o','õ'=>'o','ô'=>'o','ö'=>'o',
+        'ú'=>'u','ù'=>'u','û'=>'u','ü'=>'u',
+        'ç'=>'c',
+        'Á'=>'A','À'=>'A','Ã'=>'A','Â'=>'A','Ä'=>'A',
+        'É'=>'E','È'=>'E','Ê'=>'E','Ë'=>'E',
+        'Í'=>'I','Ì'=>'I','Î'=>'I','Ï'=>'I',
+        'Ó'=>'O','Ò'=>'O','Õ'=>'O','Ô'=>'O','Ö'=>'O',
+        'Ú'=>'U','Ù'=>'U','Û'=>'U','Ü'=>'U',
+        'Ç'=>'C' //tira o cedilha do c tmb
+    ]);
+}
+
+function verificarChute(&$chute, $numLetras)
 {
-    for ($i = 0; $i < $numLetras; $i++) {
+    //tira os acentos
+    $chute = removerAcentos($chute);
+
+    //coloca tudo em minúcsulo
+    $chute = mb_strtolower($chute, 'UTF-8');
+
+    //confere se tem letras só de a-z
+    if (!preg_match('/^[a-z]+$/', $chute)) {
+        echo "Palavra inválida! Digite apenas letras.\n";
+        return false;
+    }
+
+    // aqui verifica o tamanho do chute q o usuário quis
+    if (strlen($chute) !== $numLetras) {
+        echo "\nSeu palpite deve conter $numLetras letras!\n";
+        return false;
+    }
+
+    return true;
+}
+
+function analisarChute($chute, $palavra, $numLetras, &$letrix)//usei esse & para alterar no _ _ _ original
+{
+    for ($i = 0; $i < $numLetras; $i++) {//um for para percorrer as letras da palavra 
 
         if ($chute[$i] === $palavra[$i]) {
-            // Verde
+            // se a letra tiver  no lugar certo, adiciona ao fundo da letra a cor verde
             $letrix[$i] = "\033[42m".$chute[$i]."\033[0m";
 
         } else if (strpos($palavra, $chute[$i]) !== false) {
-            // Amarelo
+            // se a letra tiver  no lugar errado mas existir na palavra, adiciona ao fundo da letra a cor amarela
             $letrix[$i] = "\033[43m".$chute[$i]."\033[0m";
 
         } else {
-            // Vermelho
+            //se ã tiver a letra na palavra, adiciona a cor vermelha
            $letrix[$i] = "\033[41m\033[97m".$chute[$i]."\033[0m";
 
         }
     }
 
-    return implode(" ", $letrix);
+    return implode(" ", $letrix); //retorna o _ _ _ _ colorido correspondente ao chute
 }
 
 function exibirMenu()
@@ -183,7 +226,6 @@ function exibirMenu()
     echo "4 - Créditos\n";
     echo "0 - Sair\n";
     echo "================================================\n";
-    echo "Escolha uma opção: ";
 }
 
 function regrasLetrix()
@@ -191,13 +233,13 @@ function regrasLetrix()
     echo "================================================\n";
     echo "                    REGRAS                      \n";
     echo "================================================\n";
-    echo "1 - Você deve adivinhar a palavra oculta com 8 letras.\n";
+    echo "1 - Você deve adivinhar a palavra oculta \ncom 8 letras.\n";
     echo "2 - Uma dica aparece a partir da 5ª tentativa.\n";
     echo "3 - O jogador perde se ultrapassar 8 tentativas.\n";
     echo "4 - Regra das cores: \n";
-    echo "\033[32mLetra verde: Letra existe na palavra e está na posição correta.\033[0m\n";
-    echo "\033[33mLetra amarela: Letra existe na palavra mas está na posição errada.\033[0m\n";
-    echo "\033[31mLetra vermelha: Letra não existe na palavra.\033[0m\n";
+    echo "\033[32m- Letra VERDE: Letra existe na palavra e \nestá na posição correta.\033[0m\n";
+    echo "\033[33m- Letra AMARELA: Letra existe na palavra \nmas está na posição errada.\033[0m\n";
+    echo "\033[31m- Letra VERMELHA: Letra não existe na \npalavra.\033[0m\n";
 }
 
 //Função opção Pontuações
@@ -220,23 +262,6 @@ function estatisticas($stats)
     echo "Aproveitamento: " . number_format($aproveitamento, 1) . "%\n\n";
 }
 
-function verificarChute($chute, $numLetras)
-{
-
-    // Verifica se só tem letras (com acento permitido)
-    if (!preg_match('/^\p{L}+$/u', $chute)) {
-        echo "Palavra inválida! Digite apenas letras.\n";
-        return false;
-    }
-
-    // Verifica o tamanho do chute
-    if (mb_strlen($chute) !== $numLetras) {
-        echo "Seu palpite deve conter $numLetras letras!\n";
-        return false;
-    }
-
-    return true;
-}
 
 
 function sair($menu)
@@ -256,6 +281,7 @@ function creditos()
     echo "================================================\n";
     echo "                    CRÉDITOS                    \n";
     echo "================================================\n";
+    echo "Produzido por: \n";
     echo "- Alanis\n";
     echo "- Carlos\n";
     echo "- Davi Loyola\n";

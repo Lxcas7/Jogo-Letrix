@@ -7,10 +7,11 @@ OBJETIVO PRINCIPAL: Descobrir uma palavra aleatória de 8 letras utilizando tent
 
 PRINCIPAIS MECÂNICAS:
 *O jogador tenta adivinhar uma palavra de 8 letras.
-*Após cada tentativa, cada letra recebe um feedback visual:
+*Após cada tentativa, cada letra da palavra digitada recebe um feedback visual:
 VERDE: a letra está correta e na posição correta.
 AMARELO: a letra existe na palavra, mas está na posição errada. 
 VERMELHO: a letra não existe na palavra.
+*Na 7 e 8 tentativa o jogador recebe uma dica do Letrix.
 
 AÇÕES DO JOGADOR
 *Inserir uma palavra de 8 letras a cada rodada.
