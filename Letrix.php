@@ -351,7 +351,7 @@ function creditos()
     usleep(400000);
     echo "\nProduzido por:\n";
     usleep(400000);
-    echo "- \033[31mAlanis\033[0m\n";
+    echo "- \033[31mAlanis Cristine\033[0m\n";
     usleep(400000);
     echo "- \033[32mCarlos\033[0m\n";
     usleep(400000);

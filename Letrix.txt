@@ -4,6 +4,14 @@
 Narrativa ou Tema 
 -Lógica  
 
+Desenvolvedores:
+Alanis Cristine
+Carlos Lucas
+Davi Loyola
+Gabriel Pereira
+Vínicius Mendes
+Yasmin Souza
+
 
 Menu:
 - Iniciar jogo 
